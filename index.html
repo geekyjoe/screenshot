@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
@@ -39,24 +39,40 @@
             color: #1e3a8a;
             margin-bottom: 30px;
         }
-        .live-box {
-            border: 2px solid #2563eb;
+        .recommendation-box {
+            background: #1e3a8a;
+            color: white;
             padding: 20px;
-            margin-top: 20px;
             border-radius: 8px;
-        }
-        .demo-box {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(45deg, #2563eb, #3b82f6);
             margin: 20px 0;
-            border-radius: 8px;
+            font-size: 1.2em;
+        }
+        .measurements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .measurement-item {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .category-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin: 20px 0 10px 0;
         }
     </style>
 </head>
 <body>
     <h1>Screen Metrics Dashboard</h1>
     
+    <div class="recommendation-box">
+        <div id="recommendationText">Your screen size for development shall be -</div>
+    </div>
+
     <div class="grid">
         <div class="metric-card">
             <div class="metric-value" id="ppi">--</div>
@@ -76,47 +92,97 @@
         </div>
     </div>
 
-    <div class="live-box">
-        <h2>Dynamic Viewport Units Demo</h2>
-        <div class="demo-box" id="demoBox"></div>
-        <div id="dvhInfo">--</div>
-        <div id="dvwInfo">--</div>
+    <div class="category-title">Viewport Measurements</div>
+    <div class="measurements-grid" id="viewportMeasurements">
+        <!-- Filled by JavaScript -->
+    </div>
+
+    <div class="category-title">Window Measurements</div>
+    <div class="measurements-grid" id="windowMeasurements">
+        <!-- Filled by JavaScript -->
+    </div>
+
+    <div class="category-title">Screen Measurements</div>
+    <div class="measurements-grid" id="screenMeasurements">
+        <!-- Filled by JavaScript -->
     </div>
 
     <script>
         function calculatePPI() {
-            // This is an approximation as we can't get physical screen size
             const dpr = window.devicePixelRatio;
             const width = screen.width * dpr;
             const height = screen.height * dpr;
             const diagPixels = Math.sqrt(width * width + height * height);
-            // Assuming a 13-inch diagonal for demonstration
             const assumedDiagonal = 13;
-            const ppi = Math.round(diagPixels / assumedDiagonal);
-            return ppi;
+            return Math.round(diagPixels / assumedDiagonal);
+        }
+
+        function createMeasurementItem(label, value) {
+            return `
+                <div class="measurement-item">
+                    <div style="color: #666;">${label}</div>
+                    <div style="font-weight: bold;">${value}</div>
+                </div>
+            `;
+        }
+
+        function getDeviceCategory(width) {
+            if (width < 576) return "Extra Small (Mobile)";
+            if (width < 768) return "Small (Mobile/Tablet)";
+            if (width < 992) return "Medium (Tablet/Small Desktop)";
+            if (width < 1200) return "Large (Desktop)";
+            return "Extra Large (Wide Desktop)";
         }
 
         function updateMetrics() {
-            // PPI
-            document.getElementById('ppi').textContent = calculatePPI();
-
-            // Device Pixel Ratio
+            // Basic metrics
+            const ppi = calculatePPI();
+            document.getElementById('ppi').textContent = ppi;
             document.getElementById('dpr').textContent = window.devicePixelRatio.toFixed(2);
+            document.getElementById('screenRes').textContent = `${screen.width} × ${screen.height}`;
+            document.getElementById('viewportSize').textContent = `${window.innerWidth} × ${window.innerHeight}`;
 
-            // Screen Resolution
-            document.getElementById('screenRes').textContent = 
-                `${screen.width} × ${screen.height}`;
+            // Viewport measurements
+            const viewportHTML = [
+                createMeasurementItem('Viewport Width', `${window.innerWidth}px`),
+                createMeasurementItem('Viewport Height', `${window.innerHeight}px`),
+                createMeasurementItem('Visual Viewport Width', `${window.visualViewport ? window.visualViewport.width + 'px' : 'N/A'}`),
+                createMeasurementItem('Visual Viewport Height', `${window.visualViewport ? window.visualViewport.height + 'px' : 'N/A'}`),
+                createMeasurementItem('Dynamic Viewport Height (dvh)', `${window.innerHeight}px`),
+                createMeasurementItem('Dynamic Viewport Width (dvw)', `${window.innerWidth}px`),
+                createMeasurementItem('Small Viewport Height (svh)', `${window.innerHeight}px`),
+                createMeasurementItem('Large Viewport Height (lvh)', `${window.innerHeight}px`)
+            ].join('');
+            document.getElementById('viewportMeasurements').innerHTML = viewportHTML;
 
-            // Viewport Size
-            document.getElementById('viewportSize').textContent = 
-                `${window.innerWidth} × ${window.innerHeight}`;
+            // Window measurements
+            const windowHTML = [
+                createMeasurementItem('Window Outer Width', `${window.outerWidth}px`),
+                createMeasurementItem('Window Outer Height', `${window.outerHeight}px`),
+                createMeasurementItem('Client Width', `${document.documentElement.clientWidth}px`),
+                createMeasurementItem('Client Height', `${document.documentElement.clientHeight}px`),
+                createMeasurementItem('Available Width', `${window.screen.availWidth}px`),
+                createMeasurementItem('Available Height', `${window.screen.availHeight}px`)
+            ].join('');
+            document.getElementById('windowMeasurements').innerHTML = windowHTML;
 
-            // Dynamic Viewport Units
-            const demoBox = document.getElementById('demoBox');
-            document.getElementById('dvhInfo').textContent = 
-                `Dynamic Viewport Height (dvh): ${window.innerHeight}px`;
-            document.getElementById('dvwInfo').textContent = 
-                `Dynamic Viewport Width (dvw): ${window.innerWidth}px`;
+            // Screen measurements
+            const screenHTML = [
+                createMeasurementItem('Screen Width', `${screen.width}px`),
+                createMeasurementItem('Screen Height', `${screen.height}px`),
+                createMeasurementItem('Color Depth', `${screen.colorDepth} bits`),
+                createMeasurementItem('Pixel Depth', `${screen.pixelDepth} bits`),
+                createMeasurementItem('Device Category', getDeviceCategory(window.innerWidth)),
+                createMeasurementItem('Device Pixel Ratio', window.devicePixelRatio.toFixed(2))
+            ].join('');
+            document.getElementById('screenMeasurements').innerHTML = screenHTML;
+
+            // Update recommendation
+            const deviceCategory = getDeviceCategory(window.innerWidth);
+            const recommendation = `Your screen size for development shall be - ${window.innerWidth}x${window.innerHeight} (${deviceCategory})
+                \nPixel Ratio: ${window.devicePixelRatio.toFixed(2)}
+                \nPPI: ${ppi}`;
+            document.getElementById('recommendationText').textContent = recommendation;
         }
 
         // Initial update
