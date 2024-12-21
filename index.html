@@ -1,325 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Head section remains the same until the style tag -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ScreenSnap</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <style>
-        :root {
-            font-size: 16px; /* Base font size for rem calculations */
-        }
-        
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        
-        .metric-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .metric-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2563eb;
-        }
-        
-        .metric-label {
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        h1 {
-            color: #1e3a8a;
-            margin-bottom: 30px;
-        }
-        
-        .recommendation-box {
-            background: #1e3a8a;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 1.2em;
-        }
-        
-        .measurements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .measurement-item {
-            background: white;
-            padding: 10px;
-            border-radius: 4px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .category-title {
-            font-weight: bold;
-            color: #1e3a8a;
-            margin: 20px 0 10px 0;
-        }
+      :root {
+        font-size: 16px;
+      }
 
-        /* Dimensions Demo Styles */
-        .dimensions-demo {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+      .breakpoint-info {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+        font-family: monospace;
+      }
 
-        .unit-demo {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-        }
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
 
-        .unit-label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #1e3a8a;
-        }
+      .metric-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
 
-        /* Example boxes for different units */
-        .px-box { width: 100px; height: 20px; background: #3b82f6; }
-        .em-box { width: 10em; height: 20px; background: #2563eb; }
-        .rem-box { width: 10rem; height: 20px; background: #1d4ed8; }
-        .vw-box { width: 50vw; height: 20px; background: #1e40af; }
-        .vh-box { width: 200px; height: 10vh; background: #1e3a8a; }
-        .percent-box { width: 50%; height: 20px; background: #312e81; }
+      .metric-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2563eb;
+      }
 
-        /* Responsive text sizes */
-        .text-demo {
-            margin: 10px 0;
-        }
-        .text-sm { font-size: 0.875rem; }
-        .text-base { font-size: 1rem; }
-        .text-lg { font-size: 1.125rem; }
-        .text-xl { font-size: 1.25rem; }
-        .text-2xl { font-size: 1.5rem; }
+      .metric-label {
+        color: #666;
+        margin-top: 5px;
+      }
 
-        .dimension-value {
-            font-family: monospace;
-            color: #2563eb;
-            margin-left: 10px;
-        }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      h1 {
+        color: #1e3a8a;
+        margin-bottom: 30px;
+      }
+
+      .recommendation-box {
+        background: #1e3a8a;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        font-size: 1.2em;
+      }
+
+      .measurements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .measurement-item {
+        background: white;
+        padding: 10px;
+        border-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      .category-title {
+        font-weight: bold;
+        color: #1e3a8a;
+        margin: 20px 0 10px 0;
+      }
+
+      .dimensions-demo {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .unit-demo {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+      }
+
+      .unit-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #1e3a8a;
+      }
+
+      .px-box {
+        width: 100px;
+        height: 20px;
+        background: #3b82f6;
+      }
+      .em-box {
+        width: 10em;
+        height: 20px;
+        background: #2563eb;
+      }
+      .rem-box {
+        width: 10rem;
+        height: 20px;
+        background: #1d4ed8;
+      }
+      .vw-box {
+        width: 50vw;
+        height: 20px;
+        background: #1e40af;
+      }
+      .vh-box {
+        width: 200px;
+        height: 10vh;
+        background: #1e3a8a;
+      }
+      .percent-box {
+        width: 50%;
+        height: 20px;
+        background: #312e81;
+      }
+
+      .text-demo {
+        margin: 10px 0;
+      }
+      .text-sm {
+        font-size: 0.875rem;
+      }
+      .text-base {
+        font-size: 1rem;
+      }
+      .text-lg {
+        font-size: 1.125rem;
+      }
+      .text-xl {
+        font-size: 1.25rem;
+      }
+      .text-2xl {
+        font-size: 1.5rem;
+      }
+
+      .dimension-value {
+        font-family: monospace;
+        color: #2563eb;
+        margin-left: 10px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Screen Metrics & Dimensions Dashboard</h1>
-    
+
     <div class="recommendation-box">
-        <div id="recommendationText">Your screen size for development shall be -</div>
+      <div id="recommendationText">
+        Your screen size for development shall be -
+      </div>
+      <div id="breakpointInfo" class="breakpoint-info"></div>
     </div>
 
     <div class="grid">
-        <div class="metric-card">
-            <div class="metric-value" id="ppi">--</div>
-            <div class="metric-label">Pixels per Inch (PPI)</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-value" id="dpr">--</div>
-            <div class="metric-label">Device Pixel Ratio (DPR)</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-value" id="screenRes">--</div>
-            <div class="metric-label">Screen Resolution</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-value" id="viewportSize">--</div>
-            <div class="metric-label">Viewport Size</div>
-        </div>
+      <div class="metric-card">
+        <div class="metric-value" id="ppi">--</div>
+        <div class="metric-label">Pixels per Inch (PPI)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="dpr">--</div>
+        <div class="metric-label">Device Pixel Ratio (DPR)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="screenRes">--</div>
+        <div class="metric-label">Screen Resolution</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="viewportSize">--</div>
+        <div class="metric-label">Viewport Size</div>
+      </div>
     </div>
 
     <div class="category-title">CSS Dimensions Demo</div>
     <div class="dimensions-demo">
-        <div class="unit-demo">
-            <div class="unit-label">Pixels (100px)</div>
-            <div class="px-box"></div>
-            <span class="dimension-value" id="px-value"></span>
-        </div>
-        
-        <div class="unit-demo">
-            <div class="unit-label">Em (10em)</div>
-            <div class="em-box"></div>
-            <span class="dimension-value" id="em-value"></span>
-        </div>
-        
-        <div class="unit-demo">
-            <div class="unit-label">Rem (10rem)</div>
-            <div class="rem-box"></div>
-            <span class="dimension-value" id="rem-value"></span>
-        </div>
-        
-        <div class="unit-demo">
-            <div class="unit-label">Viewport Width (50vw)</div>
-            <div class="vw-box"></div>
-            <span class="dimension-value" id="vw-value"></span>
-        </div>
-        
-        <div class="unit-demo">
-            <div class="unit-label">Viewport Height (10vh)</div>
-            <div class="vh-box"></div>
-            <span class="dimension-value" id="vh-value"></span>
-        </div>
-        
-        <div class="unit-demo">
-            <div class="unit-label">Percentage (50%)</div>
-            <div class="percent-box"></div>
-            <span class="dimension-value" id="percent-value"></span>
-        </div>
+      <div class="unit-demo">
+        <div class="unit-label">Pixels (100px)</div>
+        <div class="px-box"></div>
+        <span class="dimension-value" id="px-value"></span>
+      </div>
 
-        <div class="unit-demo">
-            <div class="unit-label">Text Sizes</div>
-            <div class="text-demo text-sm">Small Text (0.875rem)</div>
-            <div class="text-demo text-base">Base Text (1rem)</div>
-            <div class="text-demo text-lg">Large Text (1.125rem)</div>
-            <div class="text-demo text-xl">Extra Large Text (1.25rem)</div>
-            <div class="text-demo text-2xl">2XL Text (1.5rem)</div>
-        </div>
+      <div class="unit-demo">
+        <div class="unit-label">Em (10em)</div>
+        <div class="em-box"></div>
+        <span class="dimension-value" id="em-value"></span>
+      </div>
+
+      <div class="unit-demo">
+        <div class="unit-label">Rem (10rem)</div>
+        <div class="rem-box"></div>
+        <span class="dimension-value" id="rem-value"></span>
+      </div>
+
+      <div class="unit-demo">
+        <div class="unit-label">Viewport Width (50vw)</div>
+        <div class="vw-box"></div>
+        <span class="dimension-value" id="vw-value"></span>
+      </div>
+
+      <div class="unit-demo">
+        <div class="unit-label">Viewport Height (10vh)</div>
+        <div class="vh-box"></div>
+        <span class="dimension-value" id="vh-value"></span>
+      </div>
+
+      <div class="unit-demo">
+        <div class="unit-label">Percentage (50%)</div>
+        <div class="percent-box"></div>
+        <span class="dimension-value" id="percent-value"></span>
+      </div>
+
+      <div class="unit-demo">
+        <div class="unit-label">Text Sizes</div>
+        <div class="text-demo text-sm">Small Text (0.875rem)</div>
+        <div class="text-demo text-base">Base Text (1rem)</div>
+        <div class="text-demo text-lg">Large Text (1.125rem)</div>
+        <div class="text-demo text-xl">Extra Large Text (1.25rem)</div>
+        <div class="text-demo text-2xl">2XL Text (1.5rem)</div>
+      </div>
     </div>
 
     <div class="category-title">Viewport Measurements</div>
-    <div class="measurements-grid" id="viewportMeasurements">
-        <!-- Filled by JavaScript -->
-    </div>
+    <div class="measurements-grid" id="viewportMeasurements"></div>
 
     <div class="category-title">Window Measurements</div>
-    <div class="measurements-grid" id="windowMeasurements">
-        <!-- Filled by JavaScript -->
-    </div>
+    <div class="measurements-grid" id="windowMeasurements"></div>
 
     <div class="category-title">Screen Measurements</div>
-    <div class="measurements-grid" id="screenMeasurements">
-        <!-- Filled by JavaScript -->
-    </div>
+    <div class="measurements-grid" id="screenMeasurements"></div>
 
     <script>
-        function calculatePPI() {
-            const dpr = window.devicePixelRatio;
-            const width = screen.width * dpr;
-            const height = screen.height * dpr;
-            const diagPixels = Math.sqrt(width * width + height * height);
-            const assumedDiagonal = 13;
-            return Math.round(diagPixels / assumedDiagonal);
+      const TAILWIND_BREAKPOINTS = {
+        default: { min: 0, prefix: "" },
+        sm: { min: 640, prefix: "sm:" },
+        md: { min: 768, prefix: "md:" },
+        lg: { min: 1024, prefix: "lg:" },
+        xl: { min: 1280, prefix: "xl:" },
+        "2xl": { min: 1536, prefix: "2xl:" },
+      };
+
+      function calculatePPI() {
+        const dpr = window.devicePixelRatio;
+        const width = screen.width * dpr;
+        const height = screen.height * dpr;
+        const diagPixels = Math.sqrt(width * width + height * height);
+        const assumedDiagonal = 13;
+        return Math.round(diagPixels / assumedDiagonal);
+      }
+
+      function getDeviceCategory(width) {
+        let tailwindInfo;
+        if (width < 640) {
+          tailwindInfo = {
+            category: "Mobile (Default)",
+            breakpoint: "default",
+          };
+        } else if (width < 768) {
+          tailwindInfo = { category: "Small (sm)", breakpoint: "sm" };
+        } else if (width < 1024) {
+          tailwindInfo = { category: "Medium (md)", breakpoint: "md" };
+        } else if (width < 1280) {
+          tailwindInfo = { category: "Large (lg)", breakpoint: "lg" };
+        } else if (width < 1536) {
+          tailwindInfo = { category: "Extra Large (xl)", breakpoint: "xl" };
+        } else {
+          tailwindInfo = { category: "2X Large (2xl)", breakpoint: "2xl" };
         }
 
-        function createMeasurementItem(label, value) {
-            return `
+        const breakpointData = TAILWIND_BREAKPOINTS[tailwindInfo.breakpoint];
+        return {
+          ...tailwindInfo,
+          prefix: breakpointData.prefix,
+          minWidth: breakpointData.min,
+        };
+      }
+
+      function createMeasurementItem(label, value) {
+        return `
                 <div class="measurement-item">
                     <div style="color: #666;">${label}</div>
                     <div style="font-weight: bold;">${value}</div>
                 </div>
             `;
+      }
+
+      function updateBreakpointInfo(deviceInfo) {
+        const breakpointHTML = `
+                Current Breakpoint: ${deviceInfo.category}
+                Tailwind Prefix: ${deviceInfo.prefix}
+                Min Width: ${deviceInfo.minWidth}px
+            `;
+        document.getElementById("breakpointInfo").textContent = breakpointHTML;
+      }
+
+      function updateDimensionValues() {
+        const boxes = {
+          px: ".px-box",
+          em: ".em-box",
+          rem: ".rem-box",
+          vw: ".vw-box",
+          vh: ".vh-box",
+          percent: ".percent-box",
+        };
+
+        for (const [unit, selector] of Object.entries(boxes)) {
+          const element = document.querySelector(selector);
+          const width = element.offsetWidth;
+          const height = element.offsetHeight;
+          document.getElementById(
+            `${unit}-value`
+          ).textContent = `Actual size: ${width}px × ${height}px`;
         }
+      }
 
-        function getDeviceCategory(width) {
-            if (width < 576) return "Extra Small (Mobile)";
-            if (width < 768) return "Small (Mobile/Tablet)";
-            if (width < 992) return "Medium (Tablet/Small Desktop)";
-            if (width < 1200) return "Large (Desktop)";
-            return "Extra Large (Wide Desktop)";
-        }
+      function updateMetrics() {
+        const ppi = calculatePPI();
+        document.getElementById("ppi").textContent = ppi;
+        document.getElementById("dpr").textContent =
+          window.devicePixelRatio.toFixed(2);
+        document.getElementById(
+          "screenRes"
+        ).textContent = `${screen.width} × ${screen.height}`;
+        document.getElementById(
+          "viewportSize"
+        ).textContent = `${window.innerWidth} × ${window.innerHeight}`;
 
-        function updateDimensionValues() {
-            // Update actual dimensions for each demo box
-            const boxes = {
-                'px': '.px-box',
-                'em': '.em-box',
-                'rem': '.rem-box',
-                'vw': '.vw-box',
-                'vh': '.vh-box',
-                'percent': '.percent-box'
-            };
+        updateDimensionValues();
 
-            for (const [unit, selector] of Object.entries(boxes)) {
-                const element = document.querySelector(selector);
-                const width = element.offsetWidth;
-                const height = element.offsetHeight;
-                document.getElementById(`${unit}-value`).textContent = 
-                    `Actual size: ${width}px × ${height}px`;
-            }
-        }
+        const deviceInfo = getDeviceCategory(window.innerWidth);
+        updateBreakpointInfo(deviceInfo);
 
-        function updateMetrics() {
-            // Basic metrics
-            const ppi = calculatePPI();
-            document.getElementById('ppi').textContent = ppi;
-            document.getElementById('dpr').textContent = window.devicePixelRatio.toFixed(2);
-            document.getElementById('screenRes').textContent = `${screen.width} × ${screen.height}`;
-            document.getElementById('viewportSize').textContent = `${window.innerWidth} × ${window.innerHeight}`;
+        const screenHTML = [
+          createMeasurementItem("Screen Width", `${screen.width}px`),
+          createMeasurementItem("Screen Height", `${screen.height}px`),
+          createMeasurementItem("Color Depth", `${screen.colorDepth} bits`),
+          createMeasurementItem("Pixel Depth", `${screen.pixelDepth} bits`),
+          createMeasurementItem("Device Category", deviceInfo.category),
+          createMeasurementItem("Tailwind Prefix", deviceInfo.prefix),
+          createMeasurementItem(
+            "Min Breakpoint Width",
+            `${deviceInfo.minWidth}px`
+          ),
+          createMeasurementItem(
+            "Device Pixel Ratio",
+            window.devicePixelRatio.toFixed(2)
+          ),
+        ].join("");
+        document.getElementById("screenMeasurements").innerHTML = screenHTML;
 
-            // Update dimension values
-            updateDimensionValues();
+        const viewportHTML = [
+          createMeasurementItem("Viewport Width", `${window.innerWidth}px`),
+          createMeasurementItem("Viewport Height", `${window.innerHeight}px`),
+          createMeasurementItem(
+            "Visual Viewport Width",
+            `${
+              window.visualViewport ? window.visualViewport.width + "px" : "N/A"
+            }`
+          ),
+          createMeasurementItem(
+            "Visual Viewport Height",
+            `${
+              window.visualViewport
+                ? window.visualViewport.height + "px"
+                : "N/A"
+            }`
+          ),
+          createMeasurementItem(
+            "Dynamic Viewport Height (dvh)",
+            `${window.innerHeight}px`
+          ),
+          createMeasurementItem(
+            "Dynamic Viewport Width (dvw)",
+            `${window.innerWidth}px`
+          ),
+          createMeasurementItem(
+            "Small Viewport Height (svh)",
+            `${window.innerHeight}px`
+          ),
+          createMeasurementItem(
+            "Large Viewport Height (lvh)",
+            `${window.innerHeight}px`
+          ),
+        ].join("");
+        document.getElementById("viewportMeasurements").innerHTML =
+          viewportHTML;
 
-            // Viewport measurements
-            const viewportHTML = [
-                createMeasurementItem('Viewport Width', `${window.innerWidth}px`),
-                createMeasurementItem('Viewport Height', `${window.innerHeight}px`),
-                createMeasurementItem('Visual Viewport Width', `${window.visualViewport ? window.visualViewport.width + 'px' : 'N/A'}`),
-                createMeasurementItem('Visual Viewport Height', `${window.visualViewport ? window.visualViewport.height + 'px' : 'N/A'}`),
-                createMeasurementItem('Dynamic Viewport Height (dvh)', `${window.innerHeight}px`),
-                createMeasurementItem('Dynamic Viewport Width (dvw)', `${window.innerWidth}px`),
-                createMeasurementItem('Small Viewport Height (svh)', `${window.innerHeight}px`),
-                createMeasurementItem('Large Viewport Height (lvh)', `${window.innerHeight}px`)
-            ].join('');
-            document.getElementById('viewportMeasurements').innerHTML = viewportHTML;
+        const windowHTML = [
+          createMeasurementItem("Window Outer Width", `${window.outerWidth}px`),
+          createMeasurementItem(
+            "Window Outer Height",
+            `${window.outerHeight}px`
+          ),
+          createMeasurementItem(
+            "Client Width",
+            `${document.documentElement.clientWidth}px`
+          ),
+          createMeasurementItem(
+            "Client Height",
+            `${document.documentElement.clientHeight}px`
+          ),
+          createMeasurementItem(
+            "Available Width",
+            `${window.screen.availWidth}px`
+          ),
+          createMeasurementItem(
+            "Available Height",
+            `${window.screen.availHeight}px`
+          ),
+        ].join("");
+        document.getElementById("windowMeasurements").innerHTML = windowHTML;
 
-            // Window measurements
-            const windowHTML = [
-                createMeasurementItem('Window Outer Width', `${window.outerWidth}px`),
-                createMeasurementItem('Window Outer Height', `${window.outerHeight}px`),
-                createMeasurementItem('Client Width', `${document.documentElement.clientWidth}px`),
-                createMeasurementItem('Client Height', `${document.documentElement.clientHeight}px`),
-                createMeasurementItem('Available Width', `${window.screen.availWidth}px`),
-                createMeasurementItem('Available Height', `${window.screen.availHeight}px`)
-            ].join('');
-            document.getElementById('windowMeasurements').innerHTML = windowHTML;
-
-            // Screen measurements
-            const screenHTML = [
-                createMeasurementItem('Screen Width', `${screen.width}px`),
-                createMeasurementItem('Screen Height', `${screen.height}px`),
-                createMeasurementItem('Color Depth', `${screen.colorDepth} bits`),
-                createMeasurementItem('Pixel Depth', `${screen.pixelDepth} bits`),
-                createMeasurementItem('Device Category', getDeviceCategory(window.innerWidth)),
-                createMeasurementItem('Device Pixel Ratio', window.devicePixelRatio.toFixed(2))
-            ].join('');
-            document.getElementById('screenMeasurements').innerHTML = screenHTML;
-
-            // Update recommendation
-            const deviceCategory = getDeviceCategory(window.innerWidth);
-            const recommendation = `Your screen size for development shall be - ${window.innerWidth}x${window.innerHeight} (${deviceCategory})
+        const recommendation = `Your screen size for development shall be - ${
+          window.innerWidth
+        }x${window.innerHeight} (${deviceInfo.category})
                 \nPixel Ratio: ${window.devicePixelRatio.toFixed(2)}
                 \nPPI: ${ppi}`;
-            document.getElementById('recommendationText').textContent = recommendation;
-        }
+        document.getElementById("recommendationText").textContent =
+          recommendation;
+      }
 
-        // Initial update
-        updateMetrics();
+      updateMetrics();
 
-        // Update on resize with debounce
-        window.addEventListener('resize', _.debounce(updateMetrics, 250));
+      window.addEventListener("resize", _.debounce(updateMetrics, 250));
     </script>
-</body>
+  </body>
 </html>
